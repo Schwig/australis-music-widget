@@ -1,4 +1,5 @@
 var audio = document.getElementById('sound-player');
+var filePath = null;
 
 self.port.on('loadTags', function(fileInfo) {
     console.log('inside of loadTags');
@@ -12,12 +13,14 @@ self.port.on('loadTags', function(fileInfo) {
     let asset = AV.Asset.fromURL(dataURI);
 
     let tagData = {};
+    filePath = fileInfo.FilePath;
 
     asset.on('metadata', function(meta) {
         console.log('asset.on metadata called');
-        tagData.Title = meta.title;
-        tagData.Album = meta.album;
-        tagData.Artist = meta.artist;
+        tagData.Title = meta.title || '';
+        tagData.Album = meta.album || '';
+        tagData.Artist = meta.artist || '';
+        tagData.filePath = filePath;
         if (typeof(meta.coverArt) != 'undefined') {
             tagData.CoverURL = meta.coverArt.toBlobURL();
         } else {
@@ -30,7 +33,7 @@ self.port.on('loadTags', function(fileInfo) {
         tagData.Duration = msec;
         asset.stop();
 
-        self.port.emit('tagsLoaded', tagData);
+        self.port.emit('tagDataLoaded', tagData);
     });
 
     asset.start();

@@ -17,10 +17,10 @@ self.port.on('loadTags', function(fileInfo) {
 
     asset.on('metadata', function(meta) {
         console.log('asset.on metadata called');
-        tagData.Title = meta.title || '';
-        tagData.Album = meta.album || '';
-        tagData.Artist = meta.artist || '';
-        tagData.filePath = filePath;
+        tagData.Title = meta.title.replace('\u0000', '') || '';
+        tagData.Album = meta.album.replace('\u0000', '')|| '';
+        tagData.Artist = meta.artist.replace('\u0000', '') || '';
+        tagData.FilePath = filePath;
         if (typeof(meta.coverArt) != 'undefined') {
             tagData.CoverURL = meta.coverArt.toBlobURL();
         } else {
